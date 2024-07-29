@@ -15,5 +15,14 @@ def get_loaders(train_df_dir,test_df_dir, submission_df_dir,batch_size):
 
     train_df, val_df = train_test_split(train_df, test_size=0.1,random_state=24)
 
-    train_dataset = MNISTTrainDataset(train_df.iloc[:,1:].values.astype(np.uint8), train_df.iloc[:,0].values,
+    train_dataset = MNISTTrainDataset(train_df.iloc[:,1:].values.astype(np.uint8), train_df.iloc[:,0].values.astype(np.int8),
                                       train_df.index.values)
+    val_dataset =  MNISTEvalDataset(val_df.iloc[:,1:].values.astype(np.uint8), val_df.iloc[:,0].values.astype(np.int8),
+                                      val_df.index.values)
+    test_dataset =  MNISTSubmissionDataset(test_df.iloc[:,1:].values.astype(np.uint8),test_df.index.values)
+
+    train_dataloader = DataLoader(dataset = train_dataset, batch_size = batch_size,shuffle = True)
+    val_dataloader = DataLoader(dataset=val_dataset,  batch_size = batch_size,shuffle = True)
+    test_dataloader = DataLoader(dataset=test_dataset,  batch_size = batch_size,shuffle = True)
+
+    return train_dataloader,val_dataloader,test_dataloader
